@@ -15,6 +15,7 @@ string model = "gpt-3.5-turbo";
 
 builder.AddOpenAIChatCompletion(model, apiKey, orgId);
 
+
 var kernel = builder.Build();
 
 
