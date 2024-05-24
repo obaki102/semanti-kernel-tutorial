@@ -1,36 +1,74 @@
-﻿using Microsoft.SemanticKernel;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.SemanticKernel;
 using Microsoft.SemanticKernel.Connectors.OpenAI;
+using Kernel = Microsoft.SemanticKernel.Kernel;
+var configurationBuilder = new ConfigurationBuilder()
+                                .AddUserSecrets("dcaf3079-8365-4fba-96ce-db6aaf6d7dbe");
+IConfiguration configuration = configurationBuilder.Build();
 
 var builder = Kernel.CreateBuilder();
 
 
-// Alternative using OpenAI
-builder.AddOpenAIChatCompletion(
-         "gpt-3.5-turbo",                  // OpenAI Model name
-         "...your OpenAI API Key...");     // OpenAI API Key
+var apiKey = configuration["ApiKey"];
+var orgId = configuration["OrgId"];
+string model = "gpt-3.5-turbo";
+
+builder.AddOpenAIChatCompletion(model, apiKey, orgId);
 
 var kernel = builder.Build();
 
-var prompt = @"{{$input}}
 
-One line TLDR with the fewest words.";
+const string skPrompt = @"
+ChatBot can have a conversation with you about any topic.
+It can give explicit instructions or say 'I don't know' if it does not have an answer.
 
-var summarize = kernel.CreateFunctionFromPrompt(prompt, executionSettings: new OpenAIPromptExecutionSettings { MaxTokens = 100 });
+{{$history}}
+User: {{$userInput}}
+ChatBot:";
 
-string text1 = @"
-1st Law of Thermodynamics - Energy cannot be created or destroyed.
-2nd Law of Thermodynamics - For a spontaneous process, the entropy of the universe increases.
-3rd Law of Thermodynamics - A perfect crystal at zero Kelvin has zero entropy.";
+var executionSettings = new OpenAIPromptExecutionSettings
+{
+    MaxTokens = 2000,
+    Temperature = 0.7,
+    TopP = 0.5
+};
 
-string text2 = @"
-1. An object at rest remains at rest, and an object in motion remains in motion at constant speed and in a straight line unless acted on by an unbalanced force.
-2. The acceleration of an object depends on the mass of the object and the amount of force applied.
-3. Whenever one object exerts a force on another object, the second object exerts an equal and opposite on the first.";
+var chatFunction = kernel.CreateFunctionFromPrompt(skPrompt, executionSettings);
 
-Console.WriteLine(await kernel.InvokeAsync(summarize, new() { ["input"] = text1 }));
+var history = "";
+var arguments = new KernelArguments()
+{
+    ["history"] = history
+};
 
-Console.WriteLine(await kernel.InvokeAsync(summarize, new() { ["input"] = text2 }));
+var userInput = "Hi, I'm looking for book suggestions";
+arguments["userInput"] = userInput;
 
-// Output:
-//   Energy conserved, entropy increases, zero entropy at 0K.
-//   Objects move in response to forces.
+var bot_answer = await chatFunction.InvokeAsync(kernel, arguments);
+
+history += $"\nUser: {userInput}\nAI: {bot_answer}\n";
+arguments["history"] = history;
+
+Console.WriteLine(history);
+
+
+
+Func<string, Task> Chat = async (string input) => {
+    // Save new message in the arguments
+    arguments["userInput"] = input;
+
+    // Process the user message and get an answer
+    var answer = await chatFunction.InvokeAsync(kernel, arguments);
+
+    // Append the new interaction to the chat history
+    var result = $"\nUser: {input}\nAI: {answer}\n";
+    history += result;
+
+    arguments["history"] = history;
+
+    // Show the response
+    Console.WriteLine(result);
+};
+
+await Chat("I would like a non-fiction book suggestion about Greece history. Please only list one book.");
+Console.WriteLine(history);
