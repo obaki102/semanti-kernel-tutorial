@@ -8,35 +8,29 @@ namespace Samples
 
         public static Kernel Build()
         {
-
-            var configurationBuilder = new ConfigurationBuilder().AddUserSecrets("dcaf3079-8365-4fba-96ce-db6aaf6d7dbe");
-            IConfiguration configuration = configurationBuilder.Build();
-
-            var builder = Kernel.CreateBuilder();
-            var apiKey = configuration["ApiKey"];
-            var orgId = configuration["OrgId"];
-            string model = "gpt-3.5-turbo";
-            builder.AddOpenAIChatCompletion(model, apiKey, orgId);
-
-
+            var builder = DefaultBuilder();
             return builder.Build();
         }
 
         public static Kernel Build(Action<IKernelBuilder> configureBuilder)
         {
+            var builder = DefaultBuilder();
+            configureBuilder(builder);
+            return builder.Build();
+        }
+
+        private static IKernelBuilder DefaultBuilder()
+        {
             var configurationBuilder = new ConfigurationBuilder().AddUserSecrets("dcaf3079-8365-4fba-96ce-db6aaf6d7dbe");
             IConfiguration configuration = configurationBuilder.Build();
 
-            string model = "gpt-3.5-turbo";
             var apiKey = configuration["ApiKey"];
             var orgId = configuration["OrgId"];
+            string model = "gpt-3.5-turbo";
 
             var builder = Kernel.CreateBuilder();
-            configureBuilder(builder);
-
             builder.AddOpenAIChatCompletion(model, apiKey, orgId);
-
-            return builder.Build();
+            return builder;
         }
 
     }

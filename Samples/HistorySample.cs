@@ -22,12 +22,12 @@ namespace Samples
 
             var kernel = DefaultKernelBuilder.Build();
             const string skPrompt = @"
-ChatBot can have a conversation with you about any topic.
-It can give explicit instructions or say 'I don't know' if it does not have an answer.
+                ChatBot can have a conversation with you about any topic.
+                It can give explicit instructions or say 'I don't know' if it does not have an answer.
 
-{{$history}}
-User: {{$userInput}}
-ChatBot:";
+                {{$history}}
+                User: {{$userInput}}
+                ChatBot:";
 
             var executionSettings = new OpenAIPromptExecutionSettings
             {
@@ -76,7 +76,15 @@ ChatBot:";
             await Chat("that sounds interesting, what are some of the topics I will learn about?");
             await Chat("Which topic from the ones you listed do you think most people find interesting?");
             await Chat("could you list some more books I could read about the topic(s) you mentioned?");
+
+            Console.WriteLine("================================================");
+            Console.WriteLine("*************************************************");
+            Console.WriteLine("*************************************************");
+            Console.WriteLine("================================================");
             Console.WriteLine(history);
+           
+
+           
         }
     }
 
