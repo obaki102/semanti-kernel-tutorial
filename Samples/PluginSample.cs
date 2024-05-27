@@ -7,11 +7,7 @@ public class PluginSample
 {
     public static async Task ShowAsync()
     {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine("================================================");
-        Console.WriteLine("       Sample:Plugin");
-        Console.WriteLine("================================================");
-
+      
 
 #pragma warning disable SKEXP0060
         var kernel = DefaultKernelBuilder.Build();

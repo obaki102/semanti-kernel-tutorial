@@ -19,10 +19,10 @@ namespace Samples
             var planner = new HandlebarsPlanner();
 
             string skPrompt = """
-{{$input}}
+                {{$input}}
 
-Rewrite the above in the style of Shakespeare.
-""";
+                Rewrite the above in the style of Shakespeare.
+                """;
 
             var executionSettings = new OpenAIPromptExecutionSettings
             {

@@ -4,5 +4,6 @@ using Samples;
 
 //await PlannerSample.ShowAsync();
 //await HistorySample.ShowAsync();
-await PluginSample.ShowAsync();
+//await PluginSample.ShowAsync();
+await AgentSample.ShowAsync();
 Console.ReadLine();

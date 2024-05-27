@@ -16,6 +16,7 @@ public sealed class MathPlugin
     }
 
     [KernelFunction, Description("Add two numbers")]
+    [return: Description("The sum:")]
     public static double Add(
         [Description("The first number to add")] double number1,
         [Description("The second number to add")] double number2
