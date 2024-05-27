@@ -5,5 +5,6 @@ using Samples;
 //await PlannerSample.ShowAsync();
 //await HistorySample.ShowAsync();
 //await PluginSample.ShowAsync();
-await AgentSample.ShowAsync();
+//await AgentSample.ShowAsync();
+await RunningLLMLocallySample.ShowAsync();
 Console.ReadLine();
