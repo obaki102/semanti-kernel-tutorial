@@ -2,6 +2,7 @@
 
 using Samples;
 
-await PlannerSample.ShowAsync();
-await HistorySample.ShowAsync();
+//await PlannerSample.ShowAsync();
+//await HistorySample.ShowAsync();
+await PluginSample.ShowAsync();
 Console.ReadLine();
